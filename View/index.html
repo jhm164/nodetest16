@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script>
+
+$(document).ready(function(){
+
+$.get('http://localhost:4000/crud/',function(response){
+console.log(response)
+createTable(response)
+
+
+});
+
+
+
+
+
+
+})
+function delete1(id){
+
+$.ajax({
+    url: 'http://localhost:4000/crud/'+id,
+    type: 'DELETE',
+    success: function(result) {
+      console.log(result)
+      alert("deleted successfully !")
+    }
+});
+
+}
+
+function update1(id,name,email){
+console.log(id+" "+name+" "+email)
+$.ajax({
+    url: 'http://localhost:4000/crud/',
+    type: 'PUT',
+    data:{id:id,name:name,email:email},
+    success: function(result) {
+      console.log(result)
+      alert("Updated successfully !")
+    }
+});
+
+}
+
+function createTable(data){
+var table="<table class='table'><th>Id</th><th>Name</th><th>Email</th><th>Update</th><th>Delete</th>"
+
+    data.map((item,index)=>{
+        
+        table=table+"<tr><td><input type='text' class='form-control' id='xid"+item.id+"' value='"+item.id+"' /></td><td><input type='text' class='form-control' id='xname"+item.id+"' value='"+item.name+"' /></td><td><input type='text' class='form-control' id='xemail"+item.id+"' value='"+item.email+"' /></td><td><button class='btn btn-success' id='updateme' value='"+item.id+"'>Update</button></td><td><button class='btn btn-primary' id='deleteme' value='"+item.id+"' >Delete</button></td></tr>"
+    })
+
+    table=table+"</table>"
+    $(".display_area").append(table)
+}
+
+$(document).on('click',"#deleteme",function(){
+    console.log($(this).attr("value"))
+delete1($(this).attr("value"))
+
+$(".display_area").text("")
+
+$.get('http://localhost:4000/crud/',function(response){
+console.log(response)
+createTable(response)
+
+
+});
+
+})
+
+
+
+
+$(document).on('click',"#updateme",function(){
+    console.log($(this).attr("value"))
+
+    var id=$(this).attr("value");
+    var xid=$("#xid"+id).val()
+      var xname=$("#xname"+id).val()
+        var xemail=$("#xemail"+id).val()
+console.log("#xemail"+id+' '+xname+" "+xemail)
+
+
+
+        
+update1(xid,xname,xemail)
+
+$(".display_area").text("")
+
+$.get('http://localhost:4000/crud/',function(response){
+
+createTable(response)
+
+
+});
+
+})
+</script>
+
+</head>
+<body>
+
+<div class="container">
+  <h2>Node Test</h2>
+  <form action="http://localhost:4000/crud/" method="post">
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+    </div>
+     <div class="form-group">
+      <label for="email">username:</label>
+      <input type="name" class="form-control"  placeholder="Enter email" name="name">
+    </div>
+    <div class="form-group">
+      <label for="pwd">Password:</label>
+      <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd">
+    </div>
+  
+    <button type="submit" class="btn btn-default">Submit</button>
+  </form>
+</div>
+
+<div class="jumbotron" style="background:#fff">
+<div class="display_area">
+
+</div>
+</div>
+</body>
+</html>
